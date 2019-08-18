@@ -2,7 +2,7 @@
 
 A library for composing various file, folder, shell and watch operations in node.
 
-[![Build Status](https://travis-ci.org/sinclairzx81/fs-effects.svg?branch=master)](https://travis-ci.org/sinclairzx81/fs-effects)
+[![NPM package](https://badge.fury.io/js/fs-effects.svg)](https://www.npmjs.com/package/fs-effects)  [![Build Status](https://travis-ci.org/sinclairzx81/fs-effects.svg?branch=master)](https://travis-ci.org/sinclairzx81/fs-effects)
 
 ```bash
 $ npm install fs-effects --save
