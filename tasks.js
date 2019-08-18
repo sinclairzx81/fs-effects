@@ -22,7 +22,7 @@ async function tools() {
 /** Runs tests for this project. */
 async function test() {
   await shell('tsc-bundle test/tsconfig.json --outFile public/test/index.js').exec()
-  await shell('mocha public/test/index.js').exec()
+  await shell('mocha public/test/index.js').expect(0).exec().catch(() => process.exit(1))
 }
 
 /** Packs this project for NPM deployment. */

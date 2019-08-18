@@ -24,11 +24,12 @@ SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-import { folder_size } from '../../src/effects/folder_size'
-import { file_write }  from '../../src/effects/file_write'
-import { run_root }    from '../support'
-import { expect }      from 'chai'
-import { folder_create } from '../../src/effects/folder_create';
+import { folder_size }   from '../../src/effects/folder_size'
+import { file_write }    from '../../src/effects/file_write'
+import { folder_create } from '../../src/effects/folder_create'
+import { run_root }      from '../support'
+import { expect }        from 'chai'
+
 
 describe('effects/folder_size', () => {
     it('should return folder size', async () => {
@@ -40,10 +41,10 @@ describe('effects/folder_size', () => {
             const file3  = util.join(root, 'folder/folder/file1')
             
             await folder_create(folder)
-            await file_write(file0, Buffer.alloc(1000))
-            await file_write(file1, Buffer.alloc(1000))
-            await file_write(file2, Buffer.alloc(1000))
-            await file_write(file3, Buffer.alloc(1000))
+            await file_write(file0, Buffer.alloc(2024))
+            await file_write(file1, Buffer.alloc(2024))
+            await file_write(file2, Buffer.alloc(2024))
+            await file_write(file3, Buffer.alloc(2024))
 
             const size = await folder_size(folder)
 
