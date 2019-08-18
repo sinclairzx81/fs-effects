@@ -8,8 +8,27 @@ A library for composing various file, folder, shell and watch operations in node
 $ npm install fs-effects --save
 ```
 
+### Example
 
-## Reference
+```typescript
+import { file, folder } from 'fs-effects'
+
+// creates 'foo.txt' and writes 'hello world'.
+await file('foo.txt').write('hello world').exec()
+
+// creates file 'google.html' and downloads some html.
+await file('google.html').write_from('http://google.com').exec()
+
+// creates a 'dist' folder and merges content from a 'bin'
+// folder and adds a license and readme.
+await folder('dist')
+    .merge_from('bin')
+    .add('license')
+    .add('readme.md')
+    .exec()
+```
+
+### Reference
 
 The following outlines the fs-effects API surface for `shell`, `watch`, `folder`, `file`. For a more comprehensive description of these functions, refer to the typescript definitions provided with this package. For example usage, see `tasks.js`.
 
