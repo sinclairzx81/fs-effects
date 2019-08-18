@@ -41,14 +41,17 @@ describe('effects/folder_size', () => {
             const file3  = util.join(root, 'folder/folder/file1')
             
             await folder_create(folder)
-            await file_write(file0, Buffer.alloc(2024))
-            await file_write(file1, Buffer.alloc(2024))
-            await file_write(file2, Buffer.alloc(2024))
-            await file_write(file3, Buffer.alloc(2024))
+            await file_write(file0, Buffer.alloc(1000))
+            await file_write(file1, Buffer.alloc(1000))
+            await file_write(file2, Buffer.alloc(1000))
+            await file_write(file3, Buffer.alloc(1000))
 
             const size = await folder_size(folder)
-
-            expect(size).to.eq(4000)
+            if (/^win/.test(process.platform)) {
+                expect(size).to.eq(4000)
+            } else {
+                expect(size).to.eq(4000 + 4096)
+            }
         })
     })
 })
