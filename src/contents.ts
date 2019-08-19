@@ -55,9 +55,7 @@ export class Contents {
         }])
     }
 
-    /**
-     * Executes these tasks.
-     */
+    /** Executes these tasks. */
     public async exec(): Promise<void> {
         while(this.effects.length > 0) {
             const effect = this.effects.shift()!

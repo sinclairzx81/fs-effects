@@ -70,7 +70,7 @@ export class File {
         }])
     }
 
-    /** Appends to this file from content loaded from a remote path or url. If the file does not exist, it is created. */
+    /** Appends to this file with content loaded from a remote path or url. If the file does not exist, it is created. */
     public append_from(path: string): File {
         return new File(this.current, [...this.effects, () => {
             return eff.file_append_from(this.current, path)
@@ -84,7 +84,7 @@ export class File {
         }])
     }
 
-    /** Writes to this file from content loaded from a remote path or url. If the file does not exist, it is created. */
+    /** Writes to this file with content loaded from a remote path or url. If the file does not exist, it is created. */
     public write_from(path: string): File {
         return new File(this.current, [...this.effects, () => {
             return eff.file_write_from(this.current, path)
@@ -98,7 +98,7 @@ export class File {
         }])
     }
 
-    /** Prepends to this file from content loaded from a remote path or url. If the file does not exist, it is created. */
+    /** Prepends to this file with content loaded from a remote path or url. If the file does not exist, it is created. */
     public prepend_from(path: string): File {
         return new File(this.current, [...this.effects, () => {
             return eff.file_prepend_from(this.current, path)

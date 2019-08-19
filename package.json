@@ -1,6 +1,6 @@
 {
   "name": "fs-effects",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "license": "MIT",
   "description": "A library for composing various file, folder, shell and watch operations in node.",
   "author": "sinclairzx81",

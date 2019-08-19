@@ -8,7 +8,8 @@ async function clean() {
 
 /** Builds this project. */
 async function build() {
-  await shell('tsc --project src/tsconfig.json --outDir public/bin --declaration').exec()
+  await shell('tsc --project src/tsconfig.json --outDir public/bin --removeComments').exec()
+  await shell('tsc --project src/tsconfig.json --outDir public/bin --declaration --emitDeclarationOnly').exec()
   await folder('public/bin').add('package.json').exec()
 }
 

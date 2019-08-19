@@ -29,22 +29,22 @@ import { Folder } from './folder'
 import { Shell }  from './shell'
 import { Watch }  from './watch'
 
-/** Creates a folder combinator. */
+/** Creates a folder effect combinator. */
 export function folder(folder: string): Folder {
     return new Folder(folder, [])
 }
 
-/** Creates a file combinator. */
+/** Creates a file effect combinator. */
 export function file(file: string) {
     return new File(file, [])
 }
 
-/** Creates a watch combinator. */
+/** Creates a watch effect combinator. */
 export function watch(path: string): Watch {
     return new Watch(path, [], 250)
 }
 
-/** Creates a shell combinator. */
+/** Creates a shell effect combinator. */
 export function shell(command: string): Shell {
     return new Shell(command, 
         data => process.stdout.write(data), 
