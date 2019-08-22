@@ -13,13 +13,17 @@ $ npm install fs-effects --save
 ```typescript
 import { file, folder } from 'fs-effects'
 
-// creates 'foo.txt' and writes 'hello world'.
-await file('foo.txt').write('hello world').exec()
+// creates 'foo.txt' and writes the string 'hello world'.
+await file('foo.txt')
+    .write('hello world')
+    .exec()
 
-// creates file 'google.html' and downloads some html.
-await file('google.html').write_from('http://google.com').exec()
+// creates file 'google.html' and writes content from remote url.
+await file('google.html')
+    .write_from('http://google.com')
+    .exec()
 
-// creates a 'dist' folder and merges content from a 'bin'
+// creates a 'dist' folder and merges content from a 'bin' folder
 // folder and adds a license and readme.
 await folder('dist')
     .merge_from('bin')
@@ -30,7 +34,7 @@ await folder('dist')
 
 ### Reference
 
-The following outlines the fs-effects API surface for `shell`, `watch`, `folder`, `file`. For a more comprehensive description of these functions, refer to the typescript definitions provided with this package. For example usage, see `tasks.js`.
+The following outlines the fs-effects surface api for `shell`, `watch`, `folder`, `file`. For a more comprehensive description of these functions, refer to the typescript definitions provided with this package. For general example usage, see the `tasks.js` file located in this project root.
 
 ```typescript
 shell(command)
@@ -69,11 +73,11 @@ file(path)
     .append_from(path)    // Appends to this file from a remote path | url. If file not exist, create.
     .append(data)         // Appends to this file. If file not exist, create.
     .copy_to(folder)      // Copies this file into the given folder. 
-    .create()             // Creates this if not exists.
+    .create()             // Creates this file if not exists.
     .delete()             // Deletes this file if exists.
     .edit(find, replace)  // Makes a find and replace edit to this file.
     .exec()               // (eval) Executes effects on this file.
-    .exists()             // (eval) Returns if this file exists.
+    .exists()             // (eval) Returns true if this file exists.
     .hash(algo?)          // (eval) Returns a hash for this file with the given algorithm.
     .move_to(folder)      // Moves this file into the given folder.
     .prepend_from(path)   // Prepends to this file from a remote path | url. If file not exist, create.

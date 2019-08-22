@@ -25,10 +25,23 @@ SOFTWARE.
 ---------------------------------------------------------------------------*/
 
 import { shell_execute } from '../../src/effects/shell_execute'
+import { should_throw } from '../support'
 import { expect } from 'chai'
 
 describe('effects/shell_execute', () => {
-    it('should pass', async () => {
-        expect(true).to.not.eq(false)
+    it('should execute an echo command', async () => {
+        await shell_execute('echo helloworld',
+            () => {},
+            () => {},
+            0)
+    })
+    it('should throw on unexpected exitcode', async () => {
+        await should_throw(async() => {
+            await shell_execute('echo helloworld',
+                () => {},
+                () => {},
+                1)
+        })
+
     })
 })

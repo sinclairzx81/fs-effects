@@ -48,7 +48,7 @@ export function watch(path: string): Watch {
 export function shell(command: string): Shell {
     return new Shell(command, 
         data => process.stdout.write(data), 
-        data => process.stderr.write(data), 
+        data => process.stderr.write(data),
         0)
 }
 

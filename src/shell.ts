@@ -26,15 +26,11 @@ SOFTWARE.
 
 import { OutFunction, ErrFunction, shell_execute } from './effects/shell_execute' 
 
-/**
- * Wraps a command line process.
- */
 export class Shell {
     constructor(private _command: string, 
                 private _out: OutFunction, 
                 private _err: ErrFunction, 
                 private _expect: number) {}
-
     /** Redirects stdout to the given function. */
     public out(func: OutFunction): Shell {
         return new Shell(this._command, func, this._err, this._expect)
@@ -43,11 +39,11 @@ export class Shell {
     public err(func: ErrFunction): Shell {
         return new Shell(this._command, this._out, func, this._expect)
     }
-    /** Redirects stdout and stderr to the given function. */
+    /** Redirects both stdout and stderr to the given function. */
     public log(func: OutFunction): Shell {
         return new Shell(this._command, func, func, this._expect)
     }
-    /** Specifies the expected exitcode for this process. */
+    /** Sets the expected exitcode for this process. */
     public expect(exitcode: number) {
         return new Shell(this._command, this._out, this._err, exitcode)
     }

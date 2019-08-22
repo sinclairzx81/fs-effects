@@ -29,15 +29,15 @@ import { watch_execute, RunFunction } from './effects/watch_execute'
 export class Watch {
     constructor(private path: string, private funcs: RunFunction[], private _timeout: number) {
     }
-    /** Sets the debounce timeout for this watch. Default is 1000 ms. */
+    /** Sets the debounce timeout for this watch. Default is 250 ms. */
     public timeout(timeout: number): Watch {
         return new Watch(this.path, [...this.funcs], timeout)
     }
-    /** Runs this function this file or folder changes. */
+    /** Runs this function when this file or folder changes. */
     public run(func: RunFunction): Watch {
         return new Watch(this.path, [...this.funcs, func], this._timeout)
     }
-    /** Executes this watch (does not complete) */
+    /** Executes this watch. This promise should not resolve. */
     public exec(): Promise<void> {
         return watch_execute(this.path, this.funcs, this._timeout)
     }

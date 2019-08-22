@@ -45,13 +45,8 @@ describe('effects/folder_size', () => {
             await file_write(file1, Buffer.alloc(1000))
             await file_write(file2, Buffer.alloc(1000))
             await file_write(file3, Buffer.alloc(1000))
-
             const size = await folder_size(folder)
-            if (/^win/.test(process.platform)) {
-                expect(size).to.eq(4000)
-            } else {
-                expect(size).to.eq(4000 + 4096)
-            }
+            expect(size).to.eq(4000)
         })
     })
 })

@@ -24,38 +24,33 @@ SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-
 import { Effect } from './effect'
 import * as eff   from './effects'
 
 export class Contents {
-
     constructor(private current: string, private effects: Effect[]) {}
 
-    /** Copies the contents of this folder to the given folder. */
+    /** Copies the contents into the given folder. */
     public copy_to(folder: string): Contents {
         const next = folder
         return new Contents(next, [...this.effects, () => {
             return eff.contents_copy_to(this.current, folder)
         }])
     }
-
-    /** Move the contents of this folder to the given folder. */
+    /** Moves the contents into the given folder. */
     public move_to(folder: string): Contents {
         const next = folder
         return new Contents(next, [...this.effects, () => {
             return eff.contents_move_to(this.current, folder)
         }])
     }
-
     /** Deletes the contents of this folder. */
     public delete(): Contents {
         return new Contents(this.current, [...this.effects, async () => {
             return eff.contents_delete(this.current)
         }])
     }
-
-    /** Executes these tasks. */
+    /** Executes effects on these contents. */
     public async exec(): Promise<void> {
         while(this.effects.length > 0) {
             const effect = this.effects.shift()!

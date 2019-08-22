@@ -68,4 +68,4 @@ import './folder_rename'
 import './folder_size'
 import './folder_stat'
 
-// import './shell_execute'
+import './shell_execute'

@@ -30,7 +30,9 @@ import { folder_exists }          from './folder_exists'
 /** Returns the size of the given folder in bytes. */
 export async function folder_size(folder: string): Promise<number> {
     if (await folder_exists(folder)) {
-        const items = await common_readdir_flatmap(folder)
+        const items = (await common_readdir_flatmap(folder))
+            .filter(item => item.stat.isFile())
+
         return items.reduce((acc, { stat }) => {
             return acc + stat.size
         }, 0)

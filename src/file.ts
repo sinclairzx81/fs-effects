@@ -31,8 +31,19 @@ import { dirname, join, basename } from 'path'
 import { Stats }                   from 'fs'
 
 export class File {
-    constructor(private current: string, private effects: Effect[]) {}
-
+    constructor(private current: string, private effects: Effect[]) { }
+    /** Appends to this file from a remote path | url. If file not exist, create. */
+    public append_from(path_or_url: string): File {
+        return new File(this.current, [...this.effects, () => {
+            return eff.file_append_from(this.current, path_or_url)
+        }])
+    }
+    /** Appends to this file. If file not exist, create. */
+    public append(content: Buffer | string | Readable): File {
+        return new File(this.current, [...this.effects, () => {
+            return eff.file_append(this.current, content)
+        }])
+    }
     /** Copies this file into the given folder. */
     public copy_to(folder: string): File {
         const next = join(folder, basename(this.current))
@@ -40,7 +51,41 @@ export class File {
             return eff.file_copy_to(this.current, folder)
         }])
     }
-
+    /** Creates this file if not exists. */
+    public create(): File {
+        return new File(this.current, [...this.effects, () => {
+            return eff.file_create(this.current)
+        }])
+    }
+    /** Deletes this file if exists. */
+    public delete(): File {
+        return new File(this.current, [...this.effects, () => {
+            return eff.file_delete(this.current)
+        }])
+    }
+    /** Makes a find and replace edit to this file. */
+    public edit(find: RegExp | string, replace: string): File {
+        return new File(this.current, [...this.effects, () => {
+            return eff.file_edit(this.current, find, replace)
+        }])
+    }
+    /** Executes effects on this file. */
+    public async exec(): Promise<void> {
+        while (this.effects.length > 0) {
+            const effect = this.effects.shift()!
+            await effect()
+        }
+    }
+    /** Returns true if this file exists. */
+    public async exists(): Promise<boolean> {
+        await this.exec()
+        return eff.file_exists(this.current)
+    }
+    /** Returns a hash for this file with the given algorithm (default is sha1) */
+    public async hash(algorithm: string = 'sha1'): Promise<string> {
+        await this.exec()
+        return eff.file_hash(this.current, algorithm)
+    }
     /** Moves this file into the given folder. */
     public move_to(folder: string): File {
         const next = join(folder, basename(this.current))
@@ -48,122 +93,60 @@ export class File {
             return eff.file_move_to(this.current, folder)
         }])
     }
-
-    /** Creates this file. If the file exists, no action. */
-    public create(): File {
-        return new File(this.current, [...this.effects, () => { 
-            return eff.file_create(this.current)
-        }])
-    }
-
-    /** Deletes this file. If the file does not exist, no action. */
-    public delete(): File {
-        return new File(this.current, [...this.effects, () => { 
-            return eff.file_delete(this.current)
-        }])
-    }
-
-    /** Truncates the contents of this file. If the file does not exist, it is created. */
-    public truncate(): File {
-        return new File(this.current, [...this.effects, () => { 
-            return eff.file_truncate(this.current)
-        }])
-    }
-
-    /** Appends to this file with content loaded from a remote path or url. If the file does not exist, it is created. */
-    public append_from(path: string): File {
-        return new File(this.current, [...this.effects, () => {
-            return eff.file_append_from(this.current, path)
-        }])
-    }
-
-    /** Appends to this file. If the file does not exist, it is created. */
-    public append(content: Buffer | string | Readable): File {
-        return new File(this.current, [...this.effects, () => {
-            return eff.file_append(this.current, content)
-        }])
-    }
-
-    /** Writes to this file with content loaded from a remote path or url. If the file does not exist, it is created. */
-    public write_from(path: string): File {
-        return new File(this.current, [...this.effects, () => {
-            return eff.file_write_from(this.current, path)
-        }])
-    }
-
-    /** Writes to this file. If the file does not exist, it is created. */
-    public write(content: Buffer | string | Readable): File {
-        return new File(this.current, [...this.effects, () => {
-            return eff.file_write(this.current, content)
-        }])
-    }
-
     /** Prepends to this file with content loaded from a remote path or url. If the file does not exist, it is created. */
-    public prepend_from(path: string): File {
+    public prepend_from(path_or_url: string): File {
         return new File(this.current, [...this.effects, () => {
-            return eff.file_prepend_from(this.current, path)
+            return eff.file_prepend_from(this.current, path_or_url)
         }])
     }
-
     /** Prepends to this file. If the file does not exist, it is created. */
     public prepend(content: Buffer | string | Readable): File {
         return new File(this.current, [...this.effects, () => {
             return eff.file_prepend(this.current, content)
         }])
     }
-
-    /** Renames this file. */
+    /** Returns the contents of this file as a buffer. */
+    public read(): Promise<Buffer>
+    /** Returns the contents of this file a string. */
+    public read(encoding: string): Promise<Buffer>
+    /** Returns the contents of this file. */
+    public async read(...args: any[]): Promise<Buffer | string> {
+        await this.exec()
+        return eff.file_read(this.current, ...args)
+    }
+    /** Renames this file to the given newname. */
     public rename(newname: string): File {
         const next = join(dirname(this.current), newname)
-        return new File(next, [...this.effects, () => { 
+        return new File(next, [...this.effects, () => {
             return eff.file_rename(this.current, newname)
         }])
     }
-
-    /** Makes a find and replace edit to this file. */
-    public edit(find: RegExp | string, replace: string): File {
-        return new File(this.current, [...this.effects, () => { 
-            return eff.file_edit(this.current, find, replace)
-        }])
-    }
-
-    /** Returns the size of this folder in bytes. */
+    /** Returns the size of this file in bytes. */
     public async size(): Promise<number> {
         await this.exec()
         return eff.file_size(this.current)
     }
-
     /** Returns a fs stats object for this file. */
     public async stat(): Promise<Stats> {
         await this.exec()
         return eff.file_stat(this.current)
     }
-
-    /** Returns true if this file exists. */
-    public async exists(): Promise<boolean> {
-        await this.exec()
-        return eff.file_exists(this.current)
+    /** Truncates the contents of this file. If the file does not exist, it is created. */
+    public truncate(): File {
+        return new File(this.current, [...this.effects, () => {
+            return eff.file_truncate(this.current)
+        }])
     }
-
-    /** Returns a hash for this file with the given algorithm (default is sha1) */
-    public async hash(algorithm: string = 'sha1'): Promise<string> {
-        await this.exec()
-        return eff.file_hash(this.current, algorithm)
+    /** Writes to this file with content loaded from a remote path or url. If the file does not exist, it is created. */
+    public write_from(path_or_url: string): File {
+        return new File(this.current, [...this.effects, () => {
+            return eff.file_write_from(this.current, path_or_url)
+        }])
     }
-
-    /** Returns the contents of this file. */
-    public read(): Promise<Buffer>
-    public read(encoding: string): Promise<Buffer>
-    public async read(...args: any[]): Promise<Buffer | string> {
-        await this.exec()
-        return eff.file_read(this.current, ...args)
-    }
-
-    /** Executes effects on this file. */
-    public async exec(): Promise<void> {
-        while(this.effects.length > 0) {
-            const effect = this.effects.shift()!
-            await effect()
-        }
+    /** Writes to this file. If the file does not exist, it is created. */
+    public write(content: Buffer | string | Readable): File {
+        return new File(this.current, [...this.effects, () => {
+            return eff.file_write(this.current, content)
+        }])
     }
 }
